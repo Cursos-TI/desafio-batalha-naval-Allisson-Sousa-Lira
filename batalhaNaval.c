@@ -1,7 +1,11 @@
 #include <stdio.h>
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+#include <string.h>
+
+// Com a adcição de direções na vertical achei melhor tratar as direções como strings e foi assim que resolvi da melhor forma
+#define HORIZONTAL "HORIZONTAL"
+#define VERTICAL "VERTICAL"
+#define DIAGONAL_DIREITA "DIAGONAL_DIREITA"
+#define DIAGONAL_ESQUERDA "DIAGONAL_ESQUERDA"
 
 // Função para exibir o tabuleiro
 void exibirTabuleiro(int tabuleiro[10][10]) {
@@ -17,59 +21,94 @@ void exibirTabuleiro(int tabuleiro[10][10]) {
 }
 
 // Função para verificar se pode posicionar um navio
-int podePosicionar(int tabuleiro[10][10], int linha, int coluna, int tamanho, char direcao) {
-    if (direcao == 'H'||direcao == 'h') {
-        if (coluna + tamanho > 10) {
+//Com as direções como strig as condições com elas em maiuscula e minuscula foram necessarios para evitar erros
+int podePosicionar(int tabuleiro[10][10], int linha, int coluna, int tamanho, const char* direcao) {
+    if (strcmp(direcao, "HORIZONTAL") == 0 || strcmp(direcao, "horizontal") == 0 ||strcmp(direcao, "Horizontal") == 0) {
+        if (coluna + tamanho > 10){
             return 0;
-        }
+        } 
         for (int j = coluna; j < coluna + tamanho; j++) {
             if (tabuleiro[linha][j] != 0){
+                return 0;
+            }
+        }
+    } else if (strcmp(direcao, "VERTICAL") == 0 ||strcmp(direcao, "vertical") == 0 ||strcmp(direcao, "Vertical") == 0) {
+        if (linha + tamanho > 10){
+            return 0;
+        } 
+        for (int i = linha; i < linha + tamanho; i++) {
+            if (tabuleiro[i][coluna] != 0){
+                return 0;
+            } 
+        }
+    } else if (strcmp(direcao, "DIAGONAL_DIREITA") == 0 ||strcmp(direcao, "diagonal_direita") == 0 ||strcmp(direcao, "Diagonal_Direita") == 0) {
+        if (linha + tamanho > 10 || coluna + tamanho > 10){
+            return 0;
+        } 
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha + i][coluna + i] != 0){
+                return 0;
+            } 
+        }
+    } else if (strcmp(direcao, "DIAGONAL_ESQUERDA") == 0 ||strcmp(direcao, "diagonal_esquerda") == 0 ||strcmp(direcao, "Diagonal_Esquerda") == 0) {
+        if (linha + tamanho > 10 || coluna - tamanho + 1 < 0){
+            return 0;
+        } 
+        for (int i = 0; i < tamanho; i++) {
+            if (tabuleiro[linha + i][coluna - i] != 0){
                 return 0;
             } 
         }
     } else {
-        if (linha + tamanho > 10){
-            return 0;
-        }
-        for (int i = linha; i < linha + tamanho; i++) {
-            if (tabuleiro[i][coluna] != 0) {
-                return 0;
-            }
-        }
+        return 0; // direção inválida
     }
+
     return 1;
 }
 
 // Função para posicionar um navio fixo se possível
-void posicionarNavio(int tabuleiro[10][10], int linha, int coluna, int tamanho, char direcao) {
+void posicionarNavio(int tabuleiro[10][10], int linha, int coluna, int tamanho, const char* direcao) {
     if (podePosicionar(tabuleiro, linha, coluna, tamanho, direcao)) {
-        if (direcao == 'H') {
+        if (strcmp(direcao, "HORIZONTAL") == 0 ||strcmp(direcao, "horizontal") == 0 ||strcmp(direcao, "Horizontal") == 0) {
             for (int j = coluna; j < coluna + tamanho; j++) {
                 tabuleiro[linha][j] = 3;
             }
-        } else {
+        } else if (strcmp(direcao, "VERTICAL") == 0 ||strcmp(direcao, "vertical") == 0 ||strcmp(direcao, "Vertical") == 0) {
             for (int i = linha; i < linha + tamanho; i++) {
                 tabuleiro[i][coluna] = 3;
             }
+        } else if (strcmp(direcao, "DIAGONAL_DIREITA") == 0 ||strcmp(direcao, "diagonal_direita") == 0 ||strcmp(direcao, "Diagonal_Direita") == 0) {
+            for (int i = 0; i < tamanho; i++) {
+                tabuleiro[linha + i][coluna + i] = 3;
+            }
+        } else if (strcmp(direcao, "DIAGONAL_ESQUERDA") == 0 ||strcmp(direcao, "diagonal_esquerda") == 0 ||strcmp(direcao, "Diagonal_Esquerda") == 0) {
+            for (int i = 0; i < tamanho; i++) {
+                tabuleiro[linha + i][coluna - i] = 3;
+            }
         }
-        printf("Navio posicionado na linha %d, coluna %d, tamanho %d, direção %c.\n", linha + 1, coluna + 1, tamanho, direcao);
+
+        printf("Navio posicionado na linha %d, coluna %d, tamanho %d, direção: %s.\n", linha + 1, coluna + 1, tamanho, direcao);
     } else {
-        printf("Erro: Sobreposição ou fora do tabuleiro na posição linha %d, coluna %d, tamanho %d, direção %c.\n", linha + 1, coluna + 1, tamanho, direcao);
+        printf("Erro: Sobreposição ou fora do tabuleiro na posição linha %d, coluna %d, tamanho %d, direção: %s.\n", linha + 1, coluna + 1, tamanho, direcao);
     }
 }
 
-// Função para posicionar os navios fixos
+// So coloquei essa função para o Main ficar mais simples .
 void posicionarNaviosFixos(int tabuleiro[10][10]) {
-    // Navio horizontal: na linha 2(1), coluna 3(2),tamanho 4(navio), direção H(Horizontal)
-    posicionarNavio(tabuleiro, 1, 2, 4, 'H');
-    // Navio vertical: na linha 5, coluna 7, tamanho 3 , direção V(Vertical)
-    posicionarNavio(tabuleiro, 4, 6, 3, 'V');
+    // Navio horizontal: na linha 10(9), coluna 1(0),tamanho 4(navio)
+    posicionarNavio(tabuleiro, 9, 0, 4, "horizontal");
+    // Navio vertical: na linha 5(4), coluna 7(6), tamanho 3 
+    posicionarNavio(tabuleiro, 4, 6, 3, "VERTICAL");
+    //Navio Diagonal Direita(De cima para baixo): linha 1(0), coluna 1 (0), tamanho 3
+    posicionarNavio(tabuleiro, 0, 0, 3, "Diagonal_Direita");
+    //Navio Diagonal Esquerda(De cima para baixo): linha 1(0), coluna 1 (0), tamanho 3
+    posicionarNavio(tabuleiro, 0, 7, 3, "diagonal_esquerda");
 }
 
 int main() {
    
     int tabuleiro[10][10] = {0}; // Inicializa o tabuleiro com agua (0) 
-
+    //Posiciona todos os navios no tabuleiro 
     posicionarNaviosFixos(tabuleiro);
     //Os navios sao representados pelo numero 3
     printf("\n****************************\n");
@@ -79,7 +118,6 @@ int main() {
     printf("\n");
 }
 
-    
 // Nível Novato - Posicionamento dos Navios
 // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
 // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
