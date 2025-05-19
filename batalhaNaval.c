@@ -92,6 +92,113 @@ void posicionarNavio(int tabuleiro[10][10], int linha, int coluna, int tamanho, 
         printf("Erro: Sobreposição ou fora do tabuleiro na posição linha %d, coluna %d, tamanho %d, direção: %s.\n", linha + 1, coluna + 1, tamanho, direcao);
     }
 }
+//Poderes 
+void desenharCone(int tabuleiro[10][10], int linha, int coluna) {
+    // Primeira linha: só a coluna central
+    if (linha >= 0 && linha < 10 && coluna >= 0 && coluna < 10) {
+        if (tabuleiro[linha][coluna] == 3)
+            tabuleiro[linha][coluna] = 5;
+        else if (tabuleiro[linha][coluna] == 0)
+            tabuleiro[linha][coluna] = 1;
+    }
+    // Segunda linha: central e laterais
+    if (linha + 1 < 10) {
+        for (int j = coluna - 1; j <= coluna + 1; j++) {
+            if (j >= 0 && j < 10) {
+                if (tabuleiro[linha + 1][j] == 3)
+                    tabuleiro[linha + 1][j] = 5;
+                else if (tabuleiro[linha + 1][j] == 0)
+                    tabuleiro[linha + 1][j] = 1;
+            }
+        }
+    }
+    // Terceira linha: 5 casas
+    if (linha + 2 < 10) {
+        for (int j = coluna - 2; j <= coluna + 2; j++) {
+            if (j >= 0 && j < 10) {
+                if (tabuleiro[linha + 2][j] == 3)
+                    tabuleiro[linha + 2][j] = 5;
+                else if (tabuleiro[linha + 2][j] == 0)
+                    tabuleiro[linha + 2][j] = 1;
+            }
+        }
+    }
+}
+void desenharCruz(int tabuleiro[10][10], int linha, int coluna) {
+
+    // Linha superior (linha -1)
+    if (linha - 1 >= 0) {
+        if (coluna >= 0 && coluna < 10) {
+            if (tabuleiro[linha - 1][coluna] == 3)
+                tabuleiro[linha - 1][coluna] = 5;
+            else if (tabuleiro[linha - 1][coluna] == 0)
+                tabuleiro[linha - 1][coluna] = 1;
+        }
+    }
+
+    // Linha central (linha)
+    for (int j = coluna - 2; j <= coluna + 2; j++) {
+        if (j >= 0 && j < 10) {
+            if (tabuleiro[linha][j] == 3)
+                tabuleiro[linha][j] = 5;
+            else if (tabuleiro[linha][j] == 0)
+                tabuleiro[linha][j] = 1;
+        }
+    }
+
+    // Linha inferior (linha +1)
+    if (linha + 1 < 10) {
+        if (coluna >= 0 && coluna < 10) {
+            if (tabuleiro[linha + 1][coluna] == 3)
+                tabuleiro[linha + 1][coluna] = 5;
+            else if (tabuleiro[linha + 1][coluna] == 0)
+                tabuleiro[linha + 1][coluna] = 1;
+        }
+    }
+}
+
+void desenharOctaedro(int tabuleiro[10][10], int linha, int coluna) {
+
+    // Linha superior
+    if (linha - 1 >= 0) {
+        if (coluna >= 0 && coluna < 10) {
+            if (tabuleiro[linha - 1][coluna] == 3)
+                tabuleiro[linha - 1][coluna] = 5;
+            else if (tabuleiro[linha - 1][coluna] == 0)
+                tabuleiro[linha - 1][coluna] = 1;
+        }
+    }
+
+    // Linha central (coluna-1 a coluna+1)
+    if (linha >= 0 && linha < 10) {
+        if (coluna - 1 >= 0) {
+            if (tabuleiro[linha][coluna - 1] == 3)
+                tabuleiro[linha][coluna - 1] = 5;
+            else if (tabuleiro[linha][coluna - 1] == 0)
+                tabuleiro[linha][coluna - 1] = 1;
+        }
+        if (tabuleiro[linha][coluna] == 3)
+            tabuleiro[linha][coluna] = 5;
+        else if (tabuleiro[linha][coluna] == 0)
+            tabuleiro[linha][coluna] = 1;
+        if (coluna + 1 < 10) {
+            if (tabuleiro[linha][coluna + 1] == 3)
+                tabuleiro[linha][coluna + 1] = 5;
+            else if (tabuleiro[linha][coluna + 1] == 0)
+                tabuleiro[linha][coluna + 1] = 1;
+        }
+    }
+
+    // Linha inferior
+    if (linha + 1 < 10) {
+        if (coluna >= 0 && coluna < 10) {
+            if (tabuleiro[linha + 1][coluna] == 3)
+                tabuleiro[linha + 1][coluna] = 5;
+            else if (tabuleiro[linha + 1][coluna] == 0)
+                tabuleiro[linha + 1][coluna] = 1;
+        }
+    }
+}
 
 // So coloquei essa função para o Main ficar mais simples .
 void posicionarNaviosFixos(int tabuleiro[10][10]) {
@@ -103,7 +210,11 @@ void posicionarNaviosFixos(int tabuleiro[10][10]) {
     posicionarNavio(tabuleiro, 0, 0, 3, "Diagonal_Direita");
     //Navio Diagonal Esquerda(De cima para baixo): linha 1(0), coluna 1 (0), tamanho 3
     posicionarNavio(tabuleiro, 0, 7, 3, "diagonal_esquerda");
+    desenharCone(tabuleiro, 0,2);
+    desenharCruz(tabuleiro, 7,3);
+    desenharOctaedro(tabuleiro, 8,8);
 }
+
 
 int main() {
    
